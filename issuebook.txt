@@ -1,0 +1,454 @@
+package Librarymanagementsystem;
+
+//gi-method ra nako kay arun han-ay
+//should I put quantity?
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import java.awt.Color;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+
+import javax.swing.SwingConstants;
+import java.awt.Font;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import com.toedter.calendar.JDateChooser;
+
+//import java.awt.event.KeyAdapter;
+//import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.ImageIcon;
+import java.awt.Toolkit;
+
+public class IssueBook extends JFrame {
+	Connection con;
+	PreparedStatement pst;
+	ResultSet rs;
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField isbn;
+	private JTextField bookTitle;
+	private JTextField authorsName;
+	private JTextField category;
+	private JTextField studID;
+	private JTextField studName;
+	private JTextField cllge;
+	private JTextField majorDepart;
+	public JDateChooser dateOfIssue;
+	public JDateChooser dueIssueDate;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					IssueBook frame = new IssueBook();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public IssueBook() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(IssueBook.class.getResource("/Images/USTP_icon.png")));
+		Connect();
+		setTitle("Issue Book");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 767, 462);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+
+		JPanel panel = new JPanel();
+		panel.setLayout(null);
+		panel.setBackground(new Color(255, 255, 255));
+		panel.setBounds(506, 53, 245, 423);
+		contentPane.add(panel);
+
+		JLabel lbl_IssueDate = new JLabel("Date of Issue:");
+		lbl_IssueDate.setForeground(new Color(204, 51, 51));
+		lbl_IssueDate.setBounds(26, 145, 99, 45);
+		panel.add(lbl_IssueDate);
+
+		JLabel lbl_IssueBook = new JLabel("");
+		lbl_IssueBook.setIcon(new ImageIcon(IssueBook.class.getResource("/Images/issue book.png")));
+		lbl_IssueBook.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				issueBooks();
+				// date of issue
+
+			}
+
+		});
+
+		lbl_IssueBook.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_IssueBook.setForeground(new Color(204, 51, 51));
+		lbl_IssueBook.setBounds(80, 314, 90, 40);
+
+		panel.add(lbl_IssueBook);
+
+		JLabel lbl_IssueBk = new JLabel("ISSUE BOOK");
+		lbl_IssueBk.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_IssueBk.setForeground(new Color(204, 51, 51));
+		lbl_IssueBk.setFont(new Font("Tahoma", Font.BOLD, 17));
+		lbl_IssueBk.setBounds(56, 5, 137, 51);
+		panel.add(lbl_IssueBk);
+
+		dateOfIssue = new JDateChooser();
+		dateOfIssue.setBounds(26, 196, 200, 20);
+		panel.add(dateOfIssue);
+
+		dueIssueDate = new JDateChooser();
+		dueIssueDate.setBounds(26, 263, 200, 20);
+		panel.add(dueIssueDate);
+
+		JLabel lblDueIssue = new JLabel("Due Issue:");
+		lblDueIssue.setForeground(new Color(204, 51, 51));
+		lblDueIssue.setBounds(26, 227, 99, 25);
+		panel.add(lblDueIssue);
+
+		JPanel panel_1 = new JPanel();
+		panel_1.setLayout(null);
+		panel_1.setBackground(new Color(32, 27, 80));
+		panel_1.setBounds(0, 53, 245, 423);
+		contentPane.add(panel_1);
+
+		JLabel lblISBN = new JLabel("Book ISBN:");
+		lblISBN.setFont(new Font("Berlin Sans FB Demi", Font.PLAIN, 11));
+		lblISBN.setForeground(new Color(248, 178, 30));
+		lblISBN.setBounds(26, 38, 99, 51);
+		panel_1.add(lblISBN);
+
+		isbn = new JTextField();
+		isbn.setColumns(10);
+		isbn.setBounds(26, 77, 197, 25);
+		panel_1.add(isbn);
+
+		JLabel lblBookTitle = new JLabel("Book Title:");
+		lblBookTitle.setFont(new Font("Berlin Sans FB Demi", Font.PLAIN, 11));
+		lblBookTitle.setForeground(new Color(248, 178, 30));
+		lblBookTitle.setBounds(26, 100, 99, 51);
+		panel_1.add(lblBookTitle);
+
+		bookTitle = new JTextField();
+		bookTitle.setColumns(10);
+		bookTitle.setBounds(26, 143, 197, 25);
+		panel_1.add(bookTitle);
+
+		JLabel lblAuthorNM = new JLabel("Author's Name:");
+		lblAuthorNM.setFont(new Font("Berlin Sans FB Demi", Font.PLAIN, 11));
+		lblAuthorNM.setForeground(new Color(248, 178, 30));
+		lblAuthorNM.setBounds(26, 162, 99, 51);
+		panel_1.add(lblAuthorNM);
+
+		authorsName = new JTextField();
+		authorsName.setColumns(10);
+		authorsName.setBounds(26, 208, 197, 25);
+		panel_1.add(authorsName);
+
+		JLabel lblCategory = new JLabel("Category:");
+		lblCategory.setFont(new Font("Berlin Sans FB Demi", Font.PLAIN, 11));
+		lblCategory.setForeground(new Color(248, 178, 30));
+		lblCategory.setBounds(26, 224, 99, 51);
+		panel_1.add(lblCategory);
+
+		category = new JTextField();
+		category.setColumns(10);
+		category.setBounds(26, 267, 197, 25);
+		panel_1.add(category);
+
+		JLabel lblNewLabel_1_2_1 = new JLabel("BOOK DETAILS");
+		lblNewLabel_1_2_1.setFont(new Font("Tahoma", Font.BOLD, 17));
+		lblNewLabel_1_2_1.setForeground(new Color(248, 178, 30));
+		lblNewLabel_1_2_1.setBounds(50, 5, 137, 51);
+		panel_1.add(lblNewLabel_1_2_1);
+
+		JLabel btnSearchBook = new JLabel("search");
+	
+		btnSearchBook.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				searchBook();
+			}
+		});
+		btnSearchBook.setBounds(178, 303, 45, 51);
+		panel_1.add(btnSearchBook);
+		btnSearchBook.setForeground(new Color(255, 255, 255));
+
+		JPanel panel_2 = new JPanel();
+		panel_2.setLayout(null);
+		panel_2.setBackground(new Color(248, 178, 30));
+		panel_2.setBounds(251, 53, 245, 423);
+		contentPane.add(panel_2);
+
+		JLabel lblStudID = new JLabel("Student ID:");
+		lblStudID.setFont(new Font("Berlin Sans FB Demi", Font.PLAIN, 11));
+		lblStudID.setForeground(new Color(32, 27, 80));
+		lblStudID.setBounds(26, 38, 99, 51);
+		panel_2.add(lblStudID);
+
+		studID = new JTextField();
+		studID.setColumns(10);
+		studID.setBounds(26, 77, 197, 25);
+		panel_2.add(studID);
+
+		JLabel lblStudNM = new JLabel("Student Name:");
+		lblStudNM.setFont(new Font("Berlin Sans FB Demi", Font.PLAIN, 11));
+		lblStudNM.setForeground(new Color(32, 27, 80));
+		lblStudNM.setBounds(26, 100, 144, 51);
+		panel_2.add(lblStudNM);
+
+		studName = new JTextField();
+		studName.setColumns(10);
+		studName.setBounds(26, 143, 197, 25);
+		panel_2.add(studName);
+
+		JLabel lblSelectCllge = new JLabel(" College:");
+		lblSelectCllge.setFont(new Font("Berlin Sans FB Demi", Font.PLAIN, 11));
+		lblSelectCllge.setForeground(new Color(32, 27, 80));
+		lblSelectCllge.setBounds(26, 162, 99, 51);
+		panel_2.add(lblSelectCllge);
+
+		JLabel lblMajorDept = new JLabel("Major Department:");
+		lblMajorDept.setFont(new Font("Berlin Sans FB Demi", Font.PLAIN, 11));
+		lblMajorDept.setForeground(new Color(32, 27, 80));
+		lblMajorDept.setBounds(26, 224, 144, 51);
+		panel_2.add(lblMajorDept);
+
+		JLabel lblNewLabel_1_2_1_1 = new JLabel("STUDENT DETAILS");
+		lblNewLabel_1_2_1_1.setForeground(new Color(32, 27, 80));
+		lblNewLabel_1_2_1_1.setFont(new Font("Tahoma", Font.BOLD, 17));
+		lblNewLabel_1_2_1_1.setBounds(40, 5, 166, 51);
+		panel_2.add(lblNewLabel_1_2_1_1);
+
+		cllge = new JTextField();
+		cllge.setColumns(10);
+		cllge.setBounds(26, 208, 197, 25);
+		panel_2.add(cllge);
+
+		majorDepart = new JTextField();
+		majorDepart.setColumns(10);
+		majorDepart.setBounds(26, 267, 197, 25);
+		panel_2.add(majorDepart);
+
+		JLabel btnSearchStud = new JLabel("search");
+		btnSearchStud.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+				searchStudent();
+
+			}
+		});
+		btnSearchStud.setForeground(Color.WHITE);
+		btnSearchStud.setBounds(178, 306, 45, 51);
+		panel_2.add(btnSearchStud);
+
+		JLabel lblISBN_1 = new JLabel("");
+		lblISBN_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblISBN_1.setIcon(new ImageIcon(IssueBook.class.getResource("/Images/back (2).png")));
+		lblISBN_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Homepage_Admin homepageAdmin = new Homepage_Admin();
+				homepageAdmin.setVisible(true);
+				dispose();
+			}
+		});
+		lblISBN_1.setForeground(Color.BLACK);
+		lblISBN_1.setBounds(0, 0, 99, 51);
+		contentPane.add(lblISBN_1);
+
+		JLabel lblRefresh = new JLabel("Refresh");
+		lblRefresh.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				btnRefresh();
+			}
+		});
+		lblRefresh.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRefresh.setForeground(new Color(204, 51, 51));
+		lblRefresh.setBounds(661, 2, 90, 40);
+		contentPane.add(lblRefresh);
+
+	}
+
+	// connection area//
+	public void Connect() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost/dbs_librarymanagement", "root", "");
+		} catch (ClassNotFoundException | SQLException ex) {
+			Logger.getLogger(IssueBook.class.getName()).log(Level.SEVERE, null, ex);
+
+		}
+	}
+
+	// method to handle "Issue Book" butt
+	private void searchStudent() {
+		try {
+			String id = studID.getText();
+
+			pst = con.prepareStatement(
+					"SELECT student_id, student_name, college, major_dept FROM tbl_studentlists WHERE student_id = ?");
+			pst.setString(1, id);
+
+			ResultSet rs = pst.executeQuery();
+
+			if (rs.next() == true) {
+				String stdntID = rs.getString(1);
+				String stdntName = rs.getString(2);
+				String college = rs.getString(3);
+				String majorDpt = rs.getString(4);
+
+				JOptionPane.showMessageDialog(null, "Student Found");
+
+				studID.setText(stdntID);
+				studName.setText(stdntName);
+				cllge.setText(college);
+				majorDepart.setText(majorDpt);
+
+				studID.requestFocus();
+
+			} else {
+				JOptionPane.showMessageDialog(null, "Student ID not found");
+				clearFieldsStud();
+
+			}
+
+		} catch (SQLException exc) {
+			exc.printStackTrace();
+		}
+	}
+
+	// a method to search books
+	private void searchBook() {
+		try {
+			String id = isbn.getText();
+
+			pst = con.prepareStatement("SELECT ISBN, book_title, author, category FROM tbl_books WHERE ISBN = ?");
+			pst.setString(1, id);
+
+			ResultSet rs = pst.executeQuery();
+
+			if (rs.next() == true) {
+				String ISBN = rs.getString(1);
+				String book_title = rs.getString(2);
+				String author = rs.getString(3);
+				String categories = rs.getString(4);
+
+				JOptionPane.showMessageDialog(null, "Book Found");
+				isbn.setText(ISBN);
+				bookTitle.setText(book_title);
+				authorsName.setText(author);
+				category.setText(categories);
+
+				isbn.requestFocus();
+
+			} else {
+				JOptionPane.showMessageDialog(null, "Book ID not found");
+				clearFields();
+
+			}
+
+		} catch (SQLException exc) {
+			exc.printStackTrace();
+		}
+
+	}
+
+	// a method to handle issue book
+	private void issueBooks() {
+		String bookISBN, book_Title, stdnt_ID, stdnt_Name; // to do for the issueDate calendar
+		bookISBN = isbn.getText();
+		book_Title = bookTitle.getText();
+		stdnt_ID = studID.getText();
+		stdnt_Name = studName.getText();
+		// issueDate = issue_Date.getSelectedItem().toString();
+
+		// Date ni sya
+		java.util.Date utilDate = dateOfIssue.getDate();
+		java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+		String issue_Date = sqlDate.toString();
+
+		java.util.Date dateUtil = dueIssueDate.getDate();
+		java.sql.Date dateSql = new java.sql.Date(dateUtil.getTime());
+		String due_Date = dateSql.toString();
+
+		try {
+
+			pst = con.prepareStatement(
+					"INSERT INTO tbl_issue_book (ISBN, book_title, student_id, student_name, issue_date, due_date, status) VALUES (?,?,?,?,?,?,?)");
+
+			pst.setString(1, bookISBN);
+			pst.setString(2, book_Title);
+			pst.setString(3, stdnt_ID);
+			pst.setString(4, stdnt_Name);
+			pst.setString(5, issue_Date);
+			pst.setString(6, due_Date);
+			pst.setString(7, "pending");
+
+			// pst.setString(5, issueDate);
+			int rowsAffected = pst.executeUpdate();
+
+			if (rowsAffected > 0) {
+				JOptionPane.showMessageDialog(null, "Book Issued Successfully!");
+			} else {
+				JOptionPane.showMessageDialog(null, "Failed to issue the book. Please check the data and try again.");
+			}
+
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	// Method to clear book-related text fields
+	private void clearFields() {
+		isbn.setText("");
+		bookTitle.setText("");
+		authorsName.setText("");
+		category.setText("");
+
+	}
+
+	private void clearFieldsStud() {
+		studID.setText("");
+		studName.setText("");
+		cllge.setText("");
+		majorDepart.setText("");
+	}
+
+	private void btnRefresh() {
+		isbn.setText("");
+		bookTitle.setText("");
+		authorsName.setText("");
+		category.setText("");
+		studID.setText("");
+		studName.setText("");
+		cllge.setText("");
+		majorDepart.setText("");
+
+	}
+}// end of brackets

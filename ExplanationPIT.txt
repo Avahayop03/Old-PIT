@@ -1,0 +1,17 @@
+our code contains the principles of OOP and prominently it is the encapsulation and inheritance, here's why:
+
+our code has encapsulation principle because we use a single class that has a bundle of functionalities or what we call the methods which we also use access modifier which is public and private methods.
+
+moreover, we also use the inheritance because it is recognizable that it has code reusability it inherits the features/properties of JFrame class builds the features of a window like pag setTitle. extending existing gui components that you might need to download. 
+
+abstraction, provides like inner workings it basically extracts from the main method and simply call these method to the main method.
+
+
+
+RS and PST:
+
+PreparedStatement and ResultSet are classes provided by the java.sql package to interact with databases. They are typically used in the context of executing SQL queries or updates and retrieving results from a database.
+
+It is used to execute parameterized SQL queries. 
+
+This line executes the prepared statement (pst) and returns a ResultSet. The result set contains the rows and columns of the data retrieved from the database. Subsequent code likely processes this result set, extracting information from each row.

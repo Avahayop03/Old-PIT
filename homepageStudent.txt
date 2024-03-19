@@ -1,0 +1,255 @@
+package Librarymanagementsystem;
+
+import java.awt.EventQueue;
+import java.awt.Color;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import java.awt.Font;
+import javax.swing.JSeparator;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//import javax.swing.JTable;
+//import javax.swing.JScrollPane;
+import java.awt.Toolkit;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+//import java.awt.Window;
+
+public class Homepage_Student extends JFrame {
+	Connection con;
+	PreparedStatement pst;
+	ResultSet rs;
+    //private String loggedInStudentID;
+
+	private JTable tblBookDetails;
+
+	private DefaultTableModel model;
+	
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					
+					Homepage_Student frame = new Homepage_Student();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	Color mouseEnterColor = new Color(0, 0, 0);
+	Color mouseExitColor;
+
+	public Homepage_Student() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Homepage_Student.class.getResource("/Images/USTP_icon.png")));
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 630, 550);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+
+		JPanel panel_top = new JPanel();
+		panel_top.setBackground(new Color(255, 255, 255, 100));
+		panel_top.setBounds(0, 0, 625, 70);
+		contentPane.add(panel_top);
+		panel_top.setLayout(null);
+
+		JLabel lbl_WlcStudent = new JLabel("Welcome, Student");
+		lbl_WlcStudent.setIcon(new ImageIcon(Homepage_Student.class.getResource("/Images/Student.png")));
+		lbl_WlcStudent.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_WlcStudent.setForeground(new Color(32, 27, 80));
+		lbl_WlcStudent.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lbl_WlcStudent.setBounds(0, 0, 176, 64);
+		panel_top.add(lbl_WlcStudent);
+
+		JPanel panel_left = new JPanel();
+		panel_left.setBackground(new Color(0, 0, 64));
+		panel_left.setBounds(0, 70, 159, 441);
+		contentPane.add(panel_left);
+		panel_left.setLayout(null);
+
+		JSeparator separator = new JSeparator();
+		separator.setBounds(10, 81, 139, 2);
+		separator.setForeground(new Color(255, 255, 255));
+		panel_left.add(separator);
+
+		JPanel panel_Dashboard = new JPanel();
+		panel_Dashboard.setBackground(new Color(248, 178, 30));
+		panel_Dashboard.setBounds(0, 25, 159, 42);
+		panel_left.add(panel_Dashboard);
+		panel_Dashboard.setLayout(null);
+
+		JLabel lbl_Dashboard = new JLabel("Dashboard");
+		lbl_Dashboard.setForeground(new Color(255, 255, 255));
+		lbl_Dashboard.setBackground(new Color(255, 255, 255));
+		lbl_Dashboard.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lbl_Dashboard.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_Dashboard.setBounds(22, 11, 113, 19);
+		panel_Dashboard.add(lbl_Dashboard);
+
+		JPanel panel_ReturnedBk = new JPanel();
+		panel_ReturnedBk.setBackground(new Color(0, 0, 64));
+		panel_ReturnedBk.setLayout(null);
+		panel_ReturnedBk.setBounds(0, 170, 159, 42);
+		panel_left.add(panel_ReturnedBk);
+
+		JLabel lbl_ReturnedBk = new JLabel("View Borrowed Books");
+		lbl_ReturnedBk.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				ViewBorrowedBooks viewBorrowedBooks = new ViewBorrowedBooks();
+				viewBorrowedBooks.setVisible(true);
+				dispose();
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				panel_ReturnedBk.setBackground(mouseEnterColor);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				panel_ReturnedBk.setBackground(mouseExitColor);
+			}
+		});
+		lbl_ReturnedBk.setForeground(new Color(192, 192, 192));
+		lbl_ReturnedBk.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_ReturnedBk.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lbl_ReturnedBk.setBounds(10, 11, 139, 19);
+		panel_ReturnedBk.add(lbl_ReturnedBk);
+
+		JPanel panel_SignOut = new JPanel();
+		panel_SignOut.setLayout(null);
+		panel_SignOut.setBackground(new Color(204, 0, 0));
+		panel_SignOut.setBounds(0, 240, 159, 42);
+		panel_left.add(panel_SignOut);
+
+		JLabel lbl_SignOut = new JLabel("Signout");
+		lbl_SignOut.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				WelcomePage singOut = new WelcomePage();
+				singOut.setVisible(true);
+				dispose();
+
+			}
+
+			public void mouseEntered(MouseEvent e) {
+				panel_SignOut.setBackground(mouseEnterColor);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				panel_SignOut.setBackground(mouseExitColor);
+			}
+
+		});
+		JScrollPane scrollPane_BkDetails = new JScrollPane();
+		scrollPane_BkDetails.setBounds(184, 203, 383, 119);
+		contentPane.add(scrollPane_BkDetails);
+		
+		tblBookDetails = new JTable();
+		scrollPane_BkDetails.setViewportView(tblBookDetails);
+		
+		
+		
+		JLabel lbl_BkDetails = new JLabel("Books");
+		lbl_BkDetails.setBackground(new Color(255, 204, 0));
+		lbl_BkDetails.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_BkDetails.setForeground(new Color(32, 27, 80));
+		lbl_BkDetails.setFont(new Font("Berlin Sans FB Demi", Font.PLAIN, 14));
+		lbl_BkDetails.setBounds(184, 163, 100, 42);
+		contentPane.add(lbl_BkDetails);
+		
+		lbl_SignOut.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_SignOut.setForeground(Color.LIGHT_GRAY);
+		lbl_SignOut.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lbl_SignOut.setBounds(10, 11, 139, 19);
+		panel_SignOut.add(lbl_SignOut);
+		Connect();
+		displayBookDetails();
+
+		JLabel lbl_LibMan = new JLabel("");
+		lbl_LibMan.setIcon(new ImageIcon(Homepage_Student.class.getResource("/Images/USTP_logo (2).png")));
+		lbl_LibMan.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_LibMan.setForeground(new Color(32, 27, 80));
+		lbl_LibMan.setFont(new Font("Tahoma", Font.PLAIN, 17));
+		lbl_LibMan.setBounds(533, 300, 60, 60);
+		contentPane.add(lbl_LibMan);
+
+		JLabel lbl_Bg = new JLabel("");
+		lbl_Bg.setBackground(new Color(255, 204, 0));
+		lbl_Bg.setIcon(new ImageIcon(Homepage_Student.class.getResource("/Images/USTP_bg (3).png")));
+		lbl_Bg.setBounds(0, 0, 614, 511);
+		contentPane.add(lbl_Bg);
+		
+		
+		
+		
+
+	}
+	
+
+	public void Connect() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost/dbs_librarymanagement", "root", "");
+		} catch (ClassNotFoundException | SQLException ex) {
+		    ex.printStackTrace();
+		}
+	}
+
+	public void displayBookDetails() {
+		try {
+			String query = "SELECT * FROM tbl_books";
+			model = new DefaultTableModel();
+			tblBookDetails.setModel(model);
+
+			// Clear existing data in the table model
+			model.setRowCount(0);
+			model.setColumnIdentifiers(new Object[] { "ISBN", "Book Title", "Author", "Category" });
+			pst = con.prepareStatement(query);
+			rs = pst.executeQuery();
+
+			// Populate the table model with the retrieved data
+			while (rs.next()) {
+				model.addRow(new Object[] { rs.getString("isbn"), rs.getString("book_title"), rs.getString("author"),
+						rs.getString("category") });
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			Logger.getLogger(Homepage_Admin.class.getName()).log(Level.SEVERE, null, ex);
+
+		}
+	}
+	}
+

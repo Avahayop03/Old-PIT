@@ -1,0 +1,194 @@
+package oop;
+import java.sql.*;
+import java.awt.EventQueue;
+
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JSeparator;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.awt.event.ActionEvent;
+import javax.swing.UIManager;
+
+public class SignUp extends JFrame {
+	static Connection con;
+	PreparedStatement pst;
+	ResultSet rs;
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField fname;
+	private JTextField createPassword;
+	private JLabel lblEmail;
+	private JTextField email;
+	private JButton btnSignUp;
+	private JLabel lblReturnLoginPg;
+	private JSeparator separator;
+	private JButton btnlogin;
+	private JLabel lblBirthday;
+	private JLabel lblLastName;
+	private JTextField lname;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					SignUp frame = new SignUp();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public SignUp() {
+		setTitle("Sign Up");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 444, 339);
+		contentPane = new JPanel();
+		contentPane.setBackground(UIManager.getColor("ColorChooser.swatchesDefaultRecentColor"));
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblFName = new JLabel("First Name");
+		lblFName.setBounds(25, 45, 66, 14);
+		contentPane.add(lblFName);
+		
+		fname = new JTextField();
+		fname.setBounds(25, 59, 116, 20);
+		contentPane.add(fname);
+		fname.setColumns(10);
+		
+		JLabel lblCreatePass = new JLabel("Create Password");
+		lblCreatePass.setBounds(25, 146, 116, 14);
+		contentPane.add(lblCreatePass);
+		
+		createPassword = new JTextField();
+		createPassword.setBounds(25, 171, 116, 20);
+		contentPane.add(createPassword);
+		createPassword.setColumns(10);
+		
+		lblEmail = new JLabel("Email");
+		lblEmail.setBounds(25, 90, 46, 14);
+		contentPane.add(lblEmail);
+		
+		email = new JTextField();
+		email.setBounds(25, 115, 116, 20);
+		contentPane.add(email);
+		email.setColumns(10);
+		
+		btnSignUp = new JButton("Sign Up");
+		btnSignUp.addActionListener(e -> {
+			String first_name = fname.getText();
+			String last_name = lname.getText();
+			String pass = createPassword.getText();
+			String userEmail =  email.getText();
+			
+			btnSignUpActionPerformed(first_name, last_name, pass, userEmail);		
+			
+		});
+				
+
+		btnSignUp.setBounds(25, 242, 89, 23);
+		contentPane.add(btnSignUp);
+		
+		lblReturnLoginPg = new JLabel("Already have an account?");
+		lblReturnLoginPg.setBounds(25, 11, 148, 14);
+		contentPane.add(lblReturnLoginPg);
+		
+		separator = new JSeparator();
+		separator.setBounds(25, 34, 241, 2);
+		contentPane.add(separator);
+		
+		btnlogin = new JButton("Log in");
+		btnlogin.setBackground(UIManager.getColor("Button.background"));
+		btnlogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				LoginPage login = new LoginPage();
+				login.setVisible(true);
+				dispose();
+			}
+			
+		});
+		btnlogin.setBounds(183, 7, 66, 23);
+		contentPane.add(btnlogin);
+		
+		lblBirthday = new JLabel("Date of Birth");
+		lblBirthday.setBounds(25, 202, 80, 14);
+		contentPane.add(lblBirthday);
+		
+		lblLastName = new JLabel("Last Name");
+		lblLastName.setBounds(158, 45, 66, 14);
+		contentPane.add(lblLastName);
+		
+		lname = new JTextField();
+		lname.setColumns(10);
+		lname.setBounds(151, 59, 116, 20);
+		contentPane.add(lname);
+	}
+	public static void Connect() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/dbs_librarymanagement", "root", "");
+        } catch (ClassNotFoundException | SQLException e) {
+            Logger.getLogger(SignUp.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+	private void btnSignUpActionPerformed(String first_name, String last_name, String pass, String userEmail) {
+		if (first_name.isEmpty() || last_name.isEmpty() || pass.isEmpty() || userEmail.isEmpty() ) {
+			JOptionPane.showMessageDialog(null, "Everything is required");
+		}
+		try {
+			Connect();
+			String insertTblSignUpStudent = "INSERT INTO tbsignupstudent (`First Name`, `Last Name`, Email, `Create Password`) VALUES (?, ?, ?, ?)";
+			pst = con.prepareStatement(insertTblSignUpStudent, Statement.RETURN_GENERATED_KEYS);
+			pst.setString(1, first_name);
+			pst.setString(2, last_name);
+			pst.setString(3, pass);
+			pst.setString(4, userEmail);
+			
+			int k = pst.executeUpdate();
+			
+			if (k == 1) {
+				JOptionPane.showMessageDialog(null, "Registered Successfully <333 ");
+				fname.setText("");
+				lname.setText("");
+				createPassword.setText("");
+				email.setText("");
+			
+				LoginPage loginpage = new LoginPage();
+				loginpage.setVisible(true);
+				dispose();
+			}
+			
+			
+		}
+		catch (Exception ex) {
+		    ex.printStackTrace();
+		    JOptionPane.showMessageDialog(null, "Database Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
+		
+		
+	}
+
+}

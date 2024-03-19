@@ -1,0 +1,131 @@
+package Librarymanagementsystem;
+
+import java.awt.EventQueue;
+//import java.awt.FlowLayout;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JScrollPane;
+import javax.swing.JLabel;
+import java.awt.Color;
+import javax.swing.SwingConstants;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+public class ViewBorrowedBooks extends JFrame {
+    Connection con;
+    PreparedStatement pst;
+    ResultSet rs;
+
+    private DefaultTableModel model;
+    private JTable tblBorrowedBooks;
+
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
+
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    ViewBorrowedBooks frame = new ViewBorrowedBooks();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public ViewBorrowedBooks() {
+        setTitle("View Borrowed Books");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 647, 494);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        
+        JLabel lblISBN_1 = new JLabel("");
+		lblISBN_1.setIcon(new ImageIcon(IssueBook.class.getResource("/Images/back (2).png")));
+        lblISBN_1.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+        		Homepage_Student homepageStudent = new Homepage_Student();
+				homepageStudent.setVisible(true);
+				dispose();
+        		
+        	}
+        });
+        lblISBN_1.setHorizontalAlignment(SwingConstants.CENTER);
+        lblISBN_1.setForeground(Color.BLACK);
+        lblISBN_1.setBounds(10, 12, 99, 51);
+        contentPane.add(lblISBN_1);
+
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+
+        tblBorrowedBooks = new JTable();
+        JScrollPane scrollPane = new JScrollPane(tblBorrowedBooks);
+        scrollPane.setBounds(192, 11, 397, 389);
+        contentPane.add(scrollPane);
+        
+        String studentID = ""; // Replace with the actual student ID
+        displayBorrowedBooks(studentID);
+
+        // Connect to the database and display borrowed books
+        Connect();
+      //  displayBorrowedBooks();
+    }
+
+    public void Connect() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/dbs_librarymanagement", "root", "");
+
+	            
+        } 
+        catch (ClassNotFoundException | SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    
+    public void displayBorrowedBooks(String studentID) {
+    	
+        try {
+            // Use a PreparedStatement to avoid SQL injection
+            pst = con.prepareStatement("SELECT book_title, due_date, status, FROM tbl_issue_book WHERE student_id = ?  ");
+            pst.setString(1, studentID);
+            rs = pst.executeQuery();
+
+            
+            model = new DefaultTableModel();
+            tblBorrowedBooks.setModel(model);
+            model.setRowCount(0);
+            
+            model.setColumnIdentifiers(new Object[]{"Book Title", "Due Date", "Status"});
+        
+            
+
+            // Populate the table model with the retrieved data
+            while (rs.next()) {
+                model.addRow(new Object[]{rs.getString("book_title"), rs.getString("due_date"), rs.getString("status")});
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(ViewBorrowedBooks.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+
+    
+}
