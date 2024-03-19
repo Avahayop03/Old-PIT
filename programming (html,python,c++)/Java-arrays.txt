@@ -1,0 +1,44 @@
+Java Arrays-
+
+Multidemnsional array- is array inside the array
+
+Arrays - collection of variables of the same type (ex:all the same strings, same int)
+
+index-based - iyang gina read is starts with 0
+elements - starts with 1
+two-types of arrays:
+single-dimensional
+2d
+
+Example: create 100 variables-
+int [] number = {1,2,3}
+
+string [] studNames = {"John", " Anna", "Mary"};
+
+syntax: 
+dataType// arrayName;(variable)// preferred name
+or
+dataType arrayName[];
+
+int [] number;
+
+syntax in Java:
+datatype [] arrayName = new datatype [arraySize]
+
+"new" keyword- allocate of space in memory
+
+
+master the skill of: finding the patterns of the code
+
+w/o values
+String [] R7 = "new" String [40];
+R7[0] = "Tana";
+R7[1] = "Carbon";
+String [] R7 = {"Tana", "Carbon"};
+For-each loop- traverse sequencially the array without using the index.
+ex:
+String [] R7 = {"Tana", "Carbon"};
+for(String student: R7) {
+System.out.print(student);
+}
+

@@ -1,0 +1,58 @@
+def open_queue_window():
+    q_window = Toplevel()
+    queue = Queue()
+    q_window.title("Queue Window")
+    q_window.geometry("920x700")
+    q_window.resizable(False,False)
+
+    bg_image = Label(q_window, image = window_bg ,borderwidth=0)
+    bg_image.place(relx = 0.5 , rely = 0.5,anchor="center")
+
+    frame = Frame(q_window,width=600, height=300, bg="white")
+    frame.place(x=180, y=250)
+
+    entry = Entry(q_window, width=22, font=("Arial", 30), bg="white")
+    entry.place(x=250, y=50)
+
+
+    labl2 = Label(q_window, text = 'Enter a number:', font=("Arial", 15), fg="white", bg="#131249")
+    labl2.place(x=100, y=55)
+
+    label = Label(q_window,text="Queue is empty", font=("Arial", 15), bg="white")
+    label.place(x=420, y=300)
+
+    #label1 = Label(q_window, text="Results:", font=("Times", 12, "bold"))
+    #label1.place(x=240, y=180)
+
+
+    def enqueue():
+        item = entry.get()
+        if item:
+            queue.put(item)
+            label.config(text=f"Queue: {list(queue.queue)},",font=("Arial", 15))
+            entry.delete(0, END)
+            label.place(x=240, y=300)
+
+    def dequeue():
+        if not queue.empty():
+            item = queue.get()
+            label.config(text=f"Queue: {list(queue.queue)}",font=("Arial", 15))
+            entry.delete(0, END)
+        else:
+            label.config(text=f"Queue: {list(queue.queue)}    Queue is empty!", bg="white")
+            entry.delete(0, END)
+
+    def clear_queue():
+        queue.queue.clear()
+        label.config(text=f"Queue is empty", bg="white")
+        label.place(x=420, y=300)
+
+    # Buttons
+    eq = Button(q_window, image= enq_btn, borderwidth=0, border=5, cursor="hand2",command=enqueue,)
+    eq.place(x=150, y=130)
+
+    dq = Button(q_window,image= dnq_btn, borderwidth=0, border=5, cursor="hand2", command=dequeue)
+    dq.place(x=390, y=130)
+
+    cq = Button(q_window,image= cll_btn, borderwidth=0, border=5, cursor="hand2", command=clear_queue)
+    cq.place(x=630, y=130)

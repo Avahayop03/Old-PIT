@@ -1,0 +1,920 @@
+import tkinter as tk
+from tkinter import messagebox, Tk, Label, Entry, Button, Toplevel
+from queue import Queue
+from tkinter import *
+
+
+root = Tk()
+root.title("Login and Home Page")
+root.geometry("920x700")
+
+#queue
+def open_queue_window():
+    q_window = Toplevel()
+    queue = Queue()
+    q_window.title("Queue Window")
+    q_window.geometry("920x700")
+    q_window.resizable(False,False)
+
+    bg_image = Label(q_window, image = window_bg ,borderwidth=0)
+    bg_image.place(relx = 0.5 , rely = 0.5,anchor="center")
+
+    frame = Frame(q_window,width=600, height=300, bg="white")
+    frame.place(x=180, y=250)
+
+    entry = Entry(q_window, width=22, font=("Arial", 30), bg="white")
+    entry.place(x=250, y=50)
+
+
+    labl2 = Label(q_window, text = 'Enter a number:', font=("Arial", 15), fg="white", bg="#131249")
+    labl2.place(x=100, y=55)
+
+    label = Label(q_window,text="Queue is empty", font=("Arial", 15), bg="white")
+    label.place(x=420, y=300)
+
+    #label1 = Label(q_window, text="Results:", font=("Times", 12, "bold"))
+    #label1.place(x=240, y=180)
+
+
+    def enqueue():
+        item = entry.get()
+        if item:
+            queue.put(item)
+            label.config(text=f"Queue: {list(queue.queue)},",font=("Arial", 15))
+            entry.delete(0, END)
+            label.place(x=240, y=300)
+
+    def dequeue():
+        if not queue.empty():
+            item = queue.get()
+            label.config(text=f"Queue: {list(queue.queue)}",font=("Arial", 15))
+            entry.delete(0, END)
+        else:
+            label.config(text=f"Queue: {list(queue.queue)}    Queue is empty!", bg="white")
+            entry.delete(0, END)
+
+    def clear_queue():
+        queue.queue.clear()
+        label.config(text=f"Queue is empty", bg="white")
+        label.place(x=420, y=300)
+
+    # Buttons
+    eq = Button(q_window, image= enq_btn, border=0, cursor="hand2",command=enqueue,bg="#14144f")
+    eq.place(x=150, y=130)
+
+    dq = Button(q_window,image= dnq_btn, border=0, cursor="hand2", command=dequeue, bg="#1b1a69")
+    dq.place(x=390, y=130)
+
+    cq = Button(q_window,image= cll_btn, border=0, cursor="hand2", command=clear_queue, bg="#212080")
+    cq.place(x=630, y=130)
+
+#stacks
+def main1():
+    s_window = Toplevel()
+    s_window.title("Stacks Window")
+    s_window.geometry("920x700")
+    s_window.resizable(False, False)
+
+    bg_image = Label(s_window, image=window_bg, borderwidth=0)
+    bg_image.place(relx=0.5, rely=0.5, anchor="center")
+
+    frame = Frame(s_window, width=600, height=300, bg="white")
+    frame.place(x=180, y=250)
+
+    labl2 = Label(s_window, text='Enter a number:', font=("Arial",16), fg="white", bg="#131249")
+    labl2.place(x=60, y=120)
+
+    stack = []  # Stack data structure
+
+    def push():
+        item = entry.get()
+        if item:
+            stack.append(item)
+            update_stack()
+            entry.delete(0, END)
+
+    def pop():
+        if stack:
+            stack.pop()
+            update_stack()
+        else:
+            stack_label.config(text="\nStack is empty!")
+
+        entry.delete(0, END)
+
+    def update_stack():
+        stack_label.config(text="Stack: " + str(stack))
+
+
+    # stacks widgets
+
+
+
+    entry = Entry(s_window, width=22, font=("Arial", 30))
+    entry.place(x=220, y=120)
+
+    push_button = Button(s_window, image= push_btn, border=0, command=push, bg="#14144f")
+    push_button.place(x=240, y=180)
+
+    pop_button = Button(s_window, image=pop_btn, border=0, command=pop, bg="#1d1c70")
+    pop_button.place(x=490, y=180)
+
+    stack_label = Label(s_window, text="Stack: ", bg="white", font=("Arial", 15))
+    stack_label.pack(pady=270)
+
+#linear search
+def open_new_window(): #linear search
+    new_window = Toplevel(root)
+    new_window.geometry("920x700")
+    new_window.resizable(False,False)
+    new_window.title("Linear Search Window")
+
+    bg_image = Label(new_window, image=window_bg, borderwidth=0)
+    bg_image.place(relx=0.5, rely=0.5, anchor="center")
+
+    frame = Frame(new_window, width=590, height=200, bg="white")
+    frame.place(x=80, y=320)
+
+    def linear_search():
+        #for searching the number
+        target = int(entry.get())
+        indices = []
+        for i in range(len(numbers)):
+            if numbers[i] == target:
+                indices.append(i)
+
+        if indices:
+            result_label.config(text=f"\n\nTarget value {target} found at indices: {', '.join(map(str, indices))}", font=("Arial", 15))
+            entry.delete(0, END)
+        else:
+            result_label.config(text=f"\n\nTarget value {target} not found in the list.",font=("Arial", 15))
+            entry.delete(0, END)
+
+    def add_number():
+        number = int(add_entry.get())
+        numbers.append(number)
+        numbers_label.config(text=f"Numbers: {', '.join(map(str, numbers))}")
+        add_entry.delete(0, END)
+
+    def clear_list():
+        numbers.clear()
+        numbers_label.config(text="Numbers: ")
+        result_label.config(text="")
+        indices.clear()  # Clear the indices list
+        add_entry.delete(0, END)
+
+    numbers = []
+
+    add_label = Label(new_window, text="Add a number:", font=("Arial", 15), fg="white", bg="#0f0e3a")
+    add_label.place(x=10, y=70)
+
+    label = Label(new_window, text="Enter Number to search : ", font=("Arial", 15), fg="white", bg="#111142")
+    label.place(x=10, y=170)
+
+    add_entry = Entry(new_window, width=22, font=("Arial", 30), bg="white")
+    add_entry.place(x=150, y=100)
+
+    entry = Entry(new_window, width=22, font=("Arial", 30), bg="white") #searching entry
+    entry.place(x=150, y=200)
+
+    result_label = Label(new_window, text="", font=("Arial", 12), bg="white")
+    result_label.place(x=100, y=350)
+
+    numbers_label = Label(new_window, text=f"Numbers: {', '.join(map(str, numbers))}", font=("Arial", 15), bg="white")
+    numbers_label.place(x=100, y=350)
+
+    #BUTTONS
+    add_button = Button(new_window, text="Add", border=0, image= add_btn, command=add_number, cursor="hand2", bg="#232187")
+    add_button.place(x=690, y=180)
+
+    search_button = Button(new_window, border= 0, text="Search", image= search_btn, command=linear_search, cursor="hand2", bg="#232187")
+    search_button.place(x=690, y=280)
+
+    clear_button = Button(new_window, border= 0, image=cllst_btn, text="Clear List", command=clear_list, cursor="hand2", bg="#232187")
+    clear_button.place(x=690, y=370)
+
+#binary search
+def BS():
+    bs_window = Toplevel(root)
+    bs_window.geometry("920x700")
+    bs_window.resizable(False, False)
+    bs_window.title("Binary Search")
+
+    bg_image = Label(bs_window, image=window_bg, borderwidth=0)
+    bg_image.place(relx=0.5, rely=0.5, anchor="center")
+
+    def binary_search(arr, target):
+        low = 0
+        high = len(arr) - 1
+
+        while low <= high:
+            mid = (low + high) // 2
+            if arr[mid] == target:
+                return True
+            elif arr[mid] < target:
+                low = mid + 1
+            else:
+                high = mid - 1
+
+        return False
+
+    def add_number():
+        number = int(entry.get())
+        numbers.append(number)
+        status_label.config(text="Number added: {}".format(number))
+        entry.delete(0, END)
+
+    def delete_number():
+        number = int(entry.get())
+        if number in numbers:
+            numbers.remove(number)
+            status_label.config(text="Number deleted:  {}".format(number))
+        else:
+            status_label.config(text="Number not found:  {}".format(number))
+        entry.delete(0, END)
+    def search_number():
+        number = int(entry.get())
+        if binary_search(numbers, number):
+            status_label.config(text="Number found: {}".format(number))
+        else:
+            status_label.config(text="Number not found: {}".format(number))
+        entry.delete(0, END)
+    def print_numbers():
+        status_label.config(text="Numbers: {}".format(numbers))
+        entry.delete(0, END)
+
+    numbers = []
+
+    label = Label(bs_window, text="INPUT HERE:", font=("Arial", 15), fg="white", bg="#111142")
+    label.place(x=100, y=85)
+
+    entry = Entry(bs_window, width=22, font=("Arial", 30), bg="white")
+    entry.place(x=240, y=80)
+
+    add_button = Button(bs_window, image=add_btn, cursor="hand2", border=0, command=add_number, bg="#131247")
+    add_button.place(x=70, y=150)
+
+    delete_button = Button(bs_window, image=dlt_btn, cursor="hand2", border=0, command=delete_number, bg="#1b1a69")
+    delete_button.place(x=270, y=150)
+
+    search_button = Button(bs_window, image=srch_btn, cursor="hand2", border=0, command=search_number, bg="#1b1a69")
+    search_button.place(x=470, y=150)
+
+    print_button = Button(bs_window, image=prnt_btn, cursor="hand2", border=0, command=print_numbers, bg="#232287")
+    print_button.place(x=670, y=150)
+
+    frame = Frame(bs_window, width=650, height=250, bg="white")
+    frame.place(relx=0.15, rely=0.40)
+
+    status_label = Label(bs_window, text="", bg="white", font=("Arial", 15))
+    status_label.place(x=200, y=300)
+
+
+
+#----------------------------------------------------------------------------------------------------
+
+
+
+class AVLNode:
+    def __init__(self, key):
+        self.key = key
+        self.left = None
+        self.right = None
+        self.height = 1
+
+
+class AVLTree:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, key):
+        self.root = self._insert(self.root, key)
+
+    def _insert(self, node, key):
+        if not node:
+            return AVLNode(key)
+        elif key < node.key:
+            node.left = self._insert(node.left, key)
+        else:
+            node.right = self._insert(node.right, key)
+
+        node.height = 1 + max(self._get_height(node.left), self._get_height(node.right))
+
+        balance = self._get_balance(node)
+
+        if balance > 1 and key < node.left.key:
+            return self._rotate_right(node)
+
+        if balance < -1 and key > node.right.key:
+            return self._rotate_left(node)
+
+        if balance > 1 and key > node.left.key:
+            node.left = self._rotate_left(node.left)
+            return self._rotate_right(node)
+
+        if balance < -1 and key < node.right.key:
+            node.right = self._rotate_right(node.right)
+            return self._rotate_left(node)
+
+        return node
+
+    def delete(self, key):
+        self.root = self._delete(self.root, key)
+
+    def _delete(self, root, key):
+        if not root:
+            return root
+
+        elif key < root.key:
+            root.left = self._delete(root.left, key)
+
+        elif key > root.key:
+            root.right = self._delete(root.right, key)
+
+        else:
+            if not root.left:
+                temp = root.right
+                root = None
+                return temp
+
+            elif not root.right:
+                temp = root.left
+                root = None
+                return temp
+
+            temp = self._get_min_node(root.right)
+            root.key = temp.key
+            root.right = self._delete(root.right, temp.key)
+
+        if not root:
+            return root
+
+        root.height = 1 + max(self._get_height(root.left), self._get_height(root.right))
+
+        balance = self._get_balance(root)
+
+        if balance > 1 and self._get_balance(root.left) >= 0:
+            return self._rotate_right(root)
+
+        if balance < -1 and self._get_balance(root.right) <= 0:
+            return self._rotate_left(root)
+
+        if balance > 1 and self._get_balance(root.left) < 0:
+            root.left = self._rotate_left(root.left)
+            return self._rotate_right(root)
+
+        if balance < -1 and self._get_balance(root.right) > 0:
+            root.right = self._rotate_right(root.right)
+            return self._rotate_left(root)
+
+        return root
+
+    def _get_min_node(self, root):
+        if root is None or root.left is None:
+            return root
+        return self._get_min_node(root.left)
+
+    def _get_height(self, node):
+        if not node:
+            return 0
+        return node.height
+
+    def _get_balance(self, node):
+        if not node:
+            return 0
+        return self._get_height(node.left) - self._get_height(node.right)
+
+    def _rotate_right(self, z):
+        y = z.left
+        T3 = y.right
+
+        y.right = z
+        z.left = T3
+
+        z.height = 1 + max(self._get_height(z.left), self._get_height(z.right))
+        y.height = 1 + max(self._get_height(y.left), self._get_height(y.right))
+
+        return y
+
+    def _rotate_left(self, z):
+        y = z.right
+        T2 = y.left
+
+        y.left = z
+        z.right = T2
+
+        z.height = 1 + max(self._get_height(z.left), self._get_height(z.right))
+        y.height = 1 + max(self._get_height(y.left), self._get_height(y.right))
+
+        return y
+
+    def inorder_traversal(self):
+        return self._inorder_traversal(self.root)
+
+    def _inorder_traversal(self, node):
+        result = []
+        if node:
+            result += self._inorder_traversal(node.left)
+            result.append(node.key)
+            result += self._inorder_traversal(node.right)
+        return result
+
+
+class AVLTreeGUI:
+    def __init__(self, root):
+        self.avl_tree = AVLTree()
+        self.root = root
+        self.root.title("AVL Tree")
+        self.root.geometry("920x700")
+        self.root.config(bg="#60818f")
+        self.root.resizable(False,False)
+
+        self.canvas = tk.Canvas(self.root, width=600, height=450)
+        self.canvas.place(x=90, y=110)
+
+        self.entry_label = tk.Label(self.root, text="INPUT NUMBER:", font=("Arial", 9), fg="white", bg="#60818f")
+        self.entry_label.place(x=90, y=80)
+
+        self.key_entry = tk.Entry(self.root, width=20)
+        self.key_entry.place(x=200, y=80)
+
+        self.insert_button = tk.Button(self.root, text="INSERT", command=self.insert_key, height=3, width=15, border=0,font=("Arial",11), bg="#d3e7f0")
+        self.insert_button.place(x=730, y=150)
+        self.delete_button = tk.Button(self.root, text="DELETE", command=self.delete_key, height=3, width=15, border=0,font=("Arial",11), bg="#d3e7f0")
+        self.delete_button.place(x=730, y=280)
+        self.inorder_button = tk.Button(self.root, text="PRINT", command=self.inorder_traversal, height=3, width=15, border=0,font=("Arial",11), bg="#d3e7f0")
+        self.inorder_button.place(x=730, y=420)
+
+        self.tree_x = 250
+        self.tree_y = 50
+        self.node_width = 30
+        self.node_height = 30
+        self.level_height = 50
+
+        self.output_text = tk.Text(self.root, height=4, width=75)
+        self.output_text.place(x=90, y=580)
+
+    def insert_key(self):
+        try:
+            key = int(self.key_entry.get())
+            self.avl_tree.insert(key)
+            self.key_entry.delete(0, tk.END)
+            self.draw_tree()
+        except ValueError:
+            self.show_error("Invalid key!")
+
+    def delete_key(self):
+        try:
+            key = int(self.key_entry.get())
+            self.avl_tree.delete(key)
+            self.key_entry.delete(0, tk.END)
+            self.draw_tree()
+        except ValueError:
+            self.show_error("Invalid key!")
+
+    def inorder_traversal(self):
+        result = self.avl_tree.inorder_traversal()
+        self.output_text.delete(1.0, tk.END)
+        self.output_text.insert(tk.END, "Inorder Traversal: " + " -> ".join(str(key) for key in result))
+
+    def show_error(self, message):
+        self.output_text.delete(1.0, tk.END)
+        self.output_text.insert(tk.END, "Error: " + message)
+
+    def draw_tree(self):
+        self.canvas.delete("all")
+        self._draw_tree(self.avl_tree.root, self.tree_x, self.tree_y, self.node_width, self.node_height)
+
+    def _draw_tree(self, node, x, y, width, height):
+        if node:
+            self.canvas.create_oval(x, y, x + width, y + height, fill="lightblue", outline="lightblue")
+            self.canvas.create_text(x + width / 2, y + height / 2, text=str(node.key), fill="black")
+
+            if node.left:
+                x_left = x - (2 ** (self.avl_tree._get_height(node) - 2)) * width
+                y_left = y + self.level_height
+                self.canvas.create_line(x + width / 2, y + height, x_left + width / 2, y_left)
+                self._draw_tree(node.left, x_left, y_left, width, height)
+
+            if node.right:
+                x_right = x + (2 ** (self.avl_tree._get_height(node) - 2)) * width
+                y_right = y + self.level_height
+                self.canvas.create_line(x + width / 2, y + height, x_right + width / 2, y_right)
+                self._draw_tree(node.right, x_right, y_right, width, height)
+
+
+def avul():
+    if __name__ == "__main__":
+        root = tk.Tk()
+        avl_tree_gui = AVLTreeGUI(root)
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------------
+
+def BST1():
+    class BSTNode:
+        def __init__(self, key):
+            self.key = key
+            self.left = None
+            self.right = None
+
+    # Binary Search Tree
+    class BST:
+        def __init__(self):
+            self.root = None
+
+        def insert(self, key):
+
+            self.root = self._insert(self.root, key)
+
+        def _insert(self, root, key):
+            if root is None:
+                return BSTNode(key)
+            if key < root.key:
+                root.left = self._insert(root.left, key)
+            elif key > root.key:
+                root.right = self._insert(root.right, key)
+            return root
+
+        def delete(self, key):
+
+            self.root = self._delete(self.root, key)
+
+        def _delete(self, root, key):
+            if root is None:
+                return root
+            if key < root.key:
+                root.left = self._delete(root.left, key)
+            elif key > root.key:
+                root.right = self._delete(root.right, key)
+            else:
+                if root.left is None:
+                    return root.right
+                elif root.right is None:
+                    return root.left
+                min_node = self._find_min(root.right)
+                root.key = min_node.key
+                root.right = self._delete(root.right, min_node.key)
+            return root
+
+        def _find_min(self, node):
+            while node.left is not None:
+                node = node.left
+
+            return node
+
+        def search(self, key):
+
+            return self._search(self.root, key)
+
+
+        def _search(self, root, key):
+            if root is None or root.key == key:
+                return root
+            if key < root.key:
+                return self._search(root.left, key)
+
+            return self._search(root.right, key)
+
+    class GUIApp:
+        def __init__(self, root):
+            self.bst = BST()
+            self.root = root
+            self.root.title("Binary Search Tree")
+            self.root.geometry("920x700")
+            self.root.config(bg="#131249")
+            self.root.resizable(False,False)
+
+            self.entry_label = tk.Label(self.root, text="Enter a value:",font=("Arial",9), fg="white", bg="#131249")
+            self.entry_label.place(x=250, y=80)
+
+            self.entry = tk.Entry(self.root, width=50)
+            self.entry.place(x=335, y=80)
+
+            self.insert_button = tk.Button(self.root, text="Insert", command=self.insert_value, height=2, width=15, border=0,font=("Arial",11), bg="#a7c5d4")
+            self.insert_button.place(x=240, y=150)
+            self.delete_button = tk.Button(self.root, text="Delete", command=self.delete_value, height=2, width=15, border=0,font=("Arial",11), bg="#a7c5d4")
+            self.delete_button.place(x=400, y=150)
+
+            self.search_button = tk.Button(self.root, text="Search", command=self.search_value, height=2, width=15, border=0,font=("Arial",11), bg="#a7c5d4")
+            self.search_button.place(x=560, y=150)
+
+            self.canvas = tk.Canvas(self.root, width=400, height=450)
+            self.canvas.place(x=255, y=230)
+
+        def insert_value(self):
+            value = int(self.entry.get())
+            self.bst.insert(value)
+            self.display_tree()
+            self.entry.delete(0, END)
+
+        def delete_value(self):
+            value = int(self.entry.get())
+            if self.bst.search(value):
+                self.bst.delete(value)
+                self.display_tree()
+            else:
+                messagebox.showerror("Error", "Value not found in the tree.")
+            self.entry.delete(0, END)
+
+        def search_value(self):
+            value = int(self.entry.get())
+            if self.bst.search(value):
+                messagebox.showinfo("Search Result", "Value found in the tree.")
+            else:
+                messagebox.showinfo("Search Result", "Value not found in the tree.")
+            self.entry.delete(0, END)
+
+        def display_tree(self):
+            self.canvas.delete("all")
+            if self.bst.root is not None:
+                self.display_node(self.bst.root, 200, 20, 100)
+
+        def display_node(self, node, x, y, gap):
+            radius = 20
+            self.canvas.create_oval(x - radius, y - radius, x + radius, y + radius, fill="#d1e6f0", outline="#d1e6f0")
+            self.canvas.create_text(x, y, text=str(node.key))
+            if node.left is not None:
+                self.canvas.create_line(x, y + radius, x - gap, y + 100, width=1)
+                self.display_node(node.left, x - gap, y + 100, gap // 3)
+            if node.right is not None:
+                self.canvas.create_line(x, y + radius, x + gap, y + 100, width=1)
+                self.display_node(node.right, x + gap, y + 100, gap // 3)
+
+    if __name__ == "__main__":
+        root = tk.Tk()
+        app = GUIApp(root)
+        root.mainloop()
+
+
+
+# ----------------------------------------------------------------------------------------------------
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+
+
+class BinaryTree:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, data):
+        if self.root is None:
+            self.root = Node(data)
+        else:
+            self._insert_recursive(data, self.root)
+
+    def _insert_recursive(self, data, node):
+        if data < node.data:
+            if node.left is None:
+                node.left = Node(data)
+            else:
+                self._insert_recursive(data, node.left)
+        elif data > node.data:
+            if node.right is None:
+                node.right = Node(data)
+            else:
+                self._insert_recursive(data, node.right)
+
+    def preorder_traversal(self):
+        return self._preorder_recursive(self.root)
+
+    def _preorder_recursive(self, node):
+        result = []
+        if node is not None:
+            result.append(node.data)
+            result += self._preorder_recursive(node.left)
+            result += self._preorder_recursive(node.right)
+        return result
+
+    def inorder_traversal(self):
+        return self._inorder_recursive(self.root)
+
+    def _inorder_recursive(self, node):
+        result = []
+        if node is not None:
+            result += self._inorder_recursive(node.left)
+            result.append(node.data)
+            result += self._inorder_recursive(node.right)
+        return result
+
+    def postorder_traversal(self):
+        return self._postorder_recursive(self.root)
+
+    def _postorder_recursive(self, node):
+        result = []
+        if node is not None:
+            result += self._postorder_recursive(node.left)
+            result += self._postorder_recursive(node.right)
+            result.append(node.data)
+        return result
+
+
+class GUIApp:
+    def __init__(self, root):
+        self.root = root
+        self.tree = BinaryTree()
+
+        self.canvas = tk.Canvas(root, width=800, height=600, bg="white")
+        self.canvas.pack()
+
+        self.entry = tk.Entry(root)
+        self.entry.pack()
+
+        self.insert_button = tk.Button(root, text="Insert", command=self.insert_data)
+        self.insert_button.pack()
+
+        self.preorder_button = tk.Button(root, text="Preorder", command=self.preorder)
+        self.preorder_button.pack()
+
+        self.inorder_button = tk.Button(root, text="Inorder", command=self.inorder)
+        self.inorder_button.pack()
+
+        self.postorder_button = tk.Button(root, text="Postorder", command=self.postorder)
+        self.postorder_button.pack()
+
+    def insert_data(self):
+        data = self.entry.get()
+        try:
+            data = int(data)
+            self.tree.insert(data)
+            self.draw_tree()
+            self.entry.delete(0, tk.END)
+        except ValueError:
+            messagebox.showerror("Error", "Invalid input. Please enter an integer.")
+
+    def draw_tree(self):
+        self.canvas.delete("all")
+        if self.tree.root is not None:
+            self._draw_tree_recursive(self.tree.root, 400, 50, 400)
+
+    def _draw_tree_recursive(self, node, x, y, h_gap=400):
+        radius = 20
+        self.canvas.create_oval(x - radius, y - radius, x + radius, y + radius, fill="lightblue")
+        self.canvas.create_text(x, y, text=str(node.data))
+
+        if node.left is not None:
+            x_left = x - h_gap // 2
+            y_left = y + 50
+            self.canvas.create_line(x, y + radius, x_left, y_left - radius, width=2, arrow=tk.LAST)
+            self._draw_tree_recursive(node.left, x_left, y_left, h_gap // 2)
+
+        if node.right is not None:
+            x_right = x + h_gap // 2
+            y_right = y + 50
+            self.canvas.create_line(x, y + radius, x_right, y_right - radius, width=2, arrow=tk.LAST)
+            self._draw_tree_recursive(node.right, x_right, y_right, h_gap // 2)
+
+    def preorder(self):
+        result = self.tree.preorder_traversal()
+        messagebox.showinfo("Preorder Traversal", " ".join(str(x) for x in result))
+
+    def inorder(self):
+        result = self.tree.inorder_traversal()
+        messagebox.showinfo("Inorder Traversal", " ".join(str(x) for x in result))
+
+    def postorder(self):
+        result = self.tree.postorder_traversal()
+        messagebox.showinfo("Postorder Traversal", " ".join(str(x) for x in result))
+
+
+def BT():
+    if __name__ == "__main__":
+        root = tk.Tk()
+        app = GUIApp(root)
+        root.mainloop()
+
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------------#
+
+#BUTTONS OF MAIN WINDOW
+
+bgtop_Image = PhotoImage(file='ustp.png')
+bgtop_Label = Label(image = bgtop_Image)
+
+Queue_Image = PhotoImage(file='6.png')
+Queue_Label = Label(image = Queue_Image)
+
+Stack_Image = PhotoImage(file='5.png')
+Stack_Label = Label(image = Stack_Image)
+
+linar_Image = PhotoImage(file='8.png')
+linar_Label = Label(image = linar_Image)
+
+avl_Image = PhotoImage(file='12.png')
+avl_Label = Label(image = avl_Image)
+
+bst_Image = PhotoImage(file='11.png')
+bst_Label = Label(image = bst_Image)
+
+bs_Image = PhotoImage(file='9.png')
+bs_Label = Label(image = bs_Image)
+
+bt_Image = PhotoImage(file='10.png')
+bt_Label = Label(image = bt_Image)
+
+ll_Image = PhotoImage(file='7.png')
+ll_Label = Label(image = ll_Image)
+
+window_bg = PhotoImage(file = '16.png')
+window_Label = Label(image = window_bg)
+
+bgds = PhotoImage(file = 'Bg_Menu.png')
+bg_Label = Label(image = bgds)
+
+#QUEUE WINDOW BUTTONS -----------------------------------------------------
+
+enq_btn = PhotoImage(file = 'enqueue.png')
+enq_Label = Label(image= enq_btn)
+
+dnq_btn = PhotoImage(file = 'dequeue.png')
+dnq_Label = Label(image= dnq_btn)
+
+cll_btn = PhotoImage(file = 'clear.png')
+cll_Label = Label(image= cll_btn)
+
+#END OF QUEUE WINDOW BUTTONS -----------------------------------------------------
+
+#LINEAR SEACRCH WINDOW BUTTONS-----------------------------------------------------
+
+
+add_btn = PhotoImage(file='add.png')
+add_label = Label(image= add_btn)
+
+search_btn = PhotoImage(file='search.png')
+search_label = Label(image= search_btn)
+
+cllst_btn = PhotoImage(file='clear_list.png')
+cllst_label = Label(image= cllst_btn)
+
+#END OF LINEAR WINDOW BUTTONS -----------------------------------------------------
+
+#STACKS WINDOW BUTTONS -----------------------------------------------------
+
+push_btn= PhotoImage(file='push.png')
+push_label= Label(image=push_btn)
+
+pop_btn= PhotoImage(file='pop.png')
+pop_label= Label(image=pop_btn)
+
+#END OF STACKS WINDOW BUTTONS -----------------------------------------------------
+
+#BINARY SEARCH WINDOW BUTTONS -----------------------------------------------------
+
+
+add_btn = PhotoImage(file='add.png')
+add_Label = Label(image=add_btn)
+
+dlt_btn = PhotoImage(file='delete.png')
+dlt_Label = Label(image=dlt_btn)
+
+srch_btn = PhotoImage(file='search.png')
+srch_Label = Label(image=srch_btn)
+
+prnt_btn = PhotoImage(file='print.png')
+print_Label = Label(image=prnt_btn)
+
+#END OF BINARY SEARCH WINDOW BUTTONS -----------------------------------------------------
+
+
+bg_image = Label(root, image = bgds,borderwidth=0)
+bg_image.place(relx = 0.5 , rely = 0.5,anchor="center")
+
+Labell = Label(root, image = bgtop_Image,borderwidth=0)
+Labell.place(relx = 0.5 , rely = 0.12,anchor="center")
+
+ustp = Label(root, text = "Computer Programming 2 And Data Structures and Algorithm", font=("Arial Bold", 17), bg='#f0f0f0')
+ustp.place(relx = 0.57, rely = 0.20,anchor="center")
+
+Queue_Button = Button(root, image = Queue_Image, command = open_queue_window, borderwidth=0,cursor="hand2")
+Queue_Button.place(relx = 0.11, rely = 0.35)
+
+Queue_Button = Button(root, image = Stack_Image, command = main1, borderwidth=0,cursor="hand2")
+Queue_Button.place(relx = 0.33, rely = 0.35)
+
+Queue_Button = Button(root, image = linar_Image, command = open_new_window , borderwidth=0,cursor="hand2")
+Queue_Button.place(relx = 0.55, rely = 0.35)
+
+Queue_Button = Button(root, image = avl_Image, command = avul, borderwidth=0,cursor="hand2")
+Queue_Button.place(relx = 0.77, rely = 0.35)
+
+Queue_Button = Button(root, image = bst_Image, command = BST1 , borderwidth=0,cursor="hand2")
+Queue_Button.place(relx = 0.11, rely = 0.7)
+
+Queue_Button = Button(root, image = bs_Image, command = BS , borderwidth=0,cursor="hand2")
+Queue_Button.place(relx = 0.33, rely = 0.7)
+
+Queue_Button = Button(root, image = bt_Image, command = BT , borderwidth=0,cursor="hand2")
+Queue_Button.place(relx = 0.55, rely = 0.7)
+
+Queue_Button = Button(root, image = ll_Image, command = BT , borderwidth=0,cursor="hand2")
+Queue_Button.place(relx = 0.77, rely = 0.7)
+
+Queue_Button = Button(root, image=ll_Image, command=BT, borderwidth=0, cursor="hand2")
+Queue_Button.place(relx=0.77, rely=0.7)
+
+root.mainloop()
